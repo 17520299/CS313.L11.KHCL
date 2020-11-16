@@ -16,3 +16,7 @@
 3. main:
     * dùng pickle để load 2 model Logistic đã được train sẵn.
     * từ dòng 57 --> :  
+        * upload_file dùng chứa file csv tải từ máy tính lên server
+        * nếu không upload sẽ chọn thủ công từ sidebar.
+        * selectbox(raw features, PCA): dùng để chọn thuộc tính gốc hay thuộc tính đã được giảm chiều để đưa vào model ML dự báo.
+        

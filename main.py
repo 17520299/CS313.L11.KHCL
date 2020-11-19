@@ -1,8 +1,10 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import Preprocessing as pre
 import pickle
+import Visualization as vs
+from sklearn.decomposition import PCA
+
 
 #choose data
 def user_input_features():
@@ -55,13 +57,14 @@ def user_input_features():
     return features
 
 st.set_option('deprecation.showfileUploaderEncoding', False)
+st.set_option('deprecation.showPyplotGlobalUse', False)
 features = st.sidebar.selectbox('Features',('Raw Features','PCA'))
 st.sidebar.subheader("Visualization Setting")
 uploaded_file = st.sidebar.file_uploader(label="Upload your CSV", type=['csv'])
 
 #load saved classification model
-logis = pickle.load(open('C:/Users/Admin/PycharmProjects/pythonProject/logisraw.pkl','rb'))
-logis_pca = pickle.load(open('C:/Users/Admin/PycharmProjects/pythonProject/logisPCA.pkl','rb'))
+logis = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/logisraw.pkl','rb'))
+logis_pca = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/logisPCA.pkl','rb'))
 if uploaded_file is None:
     data = user_input_features()
     dataraw = pd.read_csv('data_clean.csv')
@@ -83,4 +86,18 @@ if features == 'Raw Features':
 elif features == 'PCA':
     prediction_proba = logis_pca.predict_proba(data_pca)
 
+
+# Visualization Result
+X_train,X_test,y_train,y_test = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/data_split.pkl','rb'))
+algorithm = ['LR','DT','RF']
+pca = PCA(n_components=17)
+X_test_pca = pca.fit_transform(X_test)
+logis = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/logisraw.pkl','rb'))
+logisPCA = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/logisPCA.pkl','rb'))
+tree = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/treeraw.pkl','rb'))
+treePCA = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/treePCA.pkl','rb'))
+random = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/randomraw.pkl','rb'))
+randomPCA = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/randomPCA.pkl','rb'))
+st.pyplot(vs.Chart(logis,tree,random,X_test,y_test,algorithm))
+st.pyplot(vs.Chart(logisPCA,treePCA,randomPCA,X_test_pca,y_test,algorithm))
 st.write(prediction_proba)

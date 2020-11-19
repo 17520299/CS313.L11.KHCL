@@ -51,7 +51,7 @@ def TranformImport(data):
     data[data.columns] = mm.fit_transform(data[data.columns])
     return data
 def PCAImport(data):
-    pca = PCA(n_components=16)
+    pca = PCA(n_components=17)
     data = pca.fit_transform(data)
     return data
 

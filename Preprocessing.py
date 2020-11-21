@@ -44,14 +44,14 @@ def Tranform(data):
     X = data.drop('satisfaction',axis=1)
     Y = data['satisfaction']
     X[X.columns] = mm.fit_transform(X[X.columns])
-    return X,Y
+    return X,Y,data
 def TranformImport(data):
     mm = MinMaxScaler()
     data = pd.get_dummies(data,columns=['Gender', 'Customer Type', 'Type of Travel', 'Class'])
     data[data.columns] = mm.fit_transform(data[data.columns])
     return data
 def PCAImport(data):
-    pca = PCA(n_components=17)
+    pca = PCA(n_components=23)
     data = pca.fit_transform(data)
     return data
 

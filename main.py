@@ -59,12 +59,20 @@ def user_input_features():
 st.set_option('deprecation.showfileUploaderEncoding', False)
 st.set_option('deprecation.showPyplotGlobalUse', False)
 features = st.sidebar.selectbox('Features',('Raw Features','PCA'))
+mlAlgorithm = st.sidebar.selectbox('Machine Learning Algorithm',('Logistic Regression','Decision Tree','Random Forest'))
 st.sidebar.subheader("Visualization Setting")
 uploaded_file = st.sidebar.file_uploader(label="Upload your CSV", type=['csv'])
-
+Result = st.sidebar.button(label='Chart Results')
+Predict = st.sidebar.button(label='Predict')
+Importances = st.sidebar.button(label = 'Importances Features')
 #load saved classification model
+data_importances = pickle.load(open('data1_importances.pkl','rb'))
 logis = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/logisraw.pkl','rb'))
-logis_pca = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/logisPCA.pkl','rb'))
+logisPCA = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/logisPCA.pkl','rb'))
+tree = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/treeraw.pkl','rb'))
+treePCA = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/treePCA.pkl','rb'))
+random = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/randomraw.pkl','rb'))
+randomPCA = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/randomPCA.pkl','rb'))
 if uploaded_file is None:
     data = user_input_features()
     dataraw = pd.read_csv('data_clean.csv')
@@ -82,22 +90,28 @@ else:
 st.write(data)
 st.write(data_pca)
 if features == 'Raw Features':
-    prediction_proba = logis.predict_proba(data)
+    if mlAlgorithm == 'Logistic Regression':
+        prediction_proba = logis.predict_proba(data)
+    elif mlAlgorithm == 'Decision Tree':
+        prediction_proba = tree.predict_proba(data)
+    else:
+        prediction_proba = random.predict_proba(data)
 elif features == 'PCA':
-    prediction_proba = logis_pca.predict_proba(data_pca)
-
-
+    if mlAlgorithm == 'Logistic Regression':
+        prediction_proba = logisPCA.predict_proba(data_pca)
+    elif mlAlgorithm == 'Decision Tree':
+        prediction_proba = treePCA.predict_proba(data_pca)
+    else:
+        prediction_proba = randomPCA.predict_proba(data_pca)
 # Visualization Result
 X_train,X_test,y_train,y_test = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/data_split.pkl','rb'))
 algorithm = ['LR','DT','RF']
-pca = PCA(n_components=17)
+pca = PCA(n_components=23)
 X_test_pca = pca.fit_transform(X_test)
-logis = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/logisraw.pkl','rb'))
-logisPCA = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/logisPCA.pkl','rb'))
-tree = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/treeraw.pkl','rb'))
-treePCA = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/treePCA.pkl','rb'))
-random = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/randomraw.pkl','rb'))
-randomPCA = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/randomPCA.pkl','rb'))
-st.pyplot(vs.Chart(logis,tree,random,X_test,y_test,algorithm))
-st.pyplot(vs.Chart(logisPCA,treePCA,randomPCA,X_test_pca,y_test,algorithm))
-st.write(prediction_proba)
+if Result:
+    st.pyplot(vs.Chart(logis, tree, random, X_test, y_test, algorithm))
+    st.pyplot(vs.Chart(logisPCA, treePCA, randomPCA, X_test_pca, y_test, algorithm))
+if Predict:
+    st.write(prediction_proba)
+if Importances:
+    st.pyplot(vs.ChartImportances(tree,random,logis,data_importances))

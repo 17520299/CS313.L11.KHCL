@@ -4,6 +4,9 @@ from sklearn.decomposition import PCA
 import numpy as np
 from sklearn.metrics import precision_recall_fscore_support
 import matplotlib.pylab as plb
+import seaborn as sns
+import pandas as pd
+raw = pd.read_csv('train.csv')
 
 
 pca = PCA(n_components=23)
@@ -45,11 +48,14 @@ def Chart(model,model1,model2,X_test,y_test,algorithm):
     plt.figure(figsize=(12,6))
     plt.subplot(1,3,1)
     Dodo(precision_logis,predict_tree,predict_random,algorithm)
+    plt.xlabel("Precision")
     plt.subplot(1,3,2)
     Dodo(recall_logis,recall_tree,recall_random,algorithm)
+    plt.xlabel("Recall")
     plt.title("Metrics Chart Comparation(Precision - Recall - F1-Score)")
     plt.subplot(1,3,3)
     Dodo(f1_logis,f1_tree,f1_random,algorithm)
+    plt.xlabel("F1-Score")
     plt.show()
 # Chart bieu dien Importance Features
 def ChartImportances(model1,model2,model3,data):
@@ -65,20 +71,29 @@ def ChartImportances(model1,model2,model3,data):
         factor = np.argsort(importances)
         plb.barh(range(len(factor)),importances[factor],color='blue',align='center')
         plt.yticks(range(len(factor)),feature[factor])
-    plt.figure(figsize=(32,10))
-    plt.subplot(1,3,1)
+    plt.figure(figsize=(32,12))
+    plt.subplot(2,3,1)
     ImportanceFeatures(model1,data)
     plt.xlabel("Decision Tree")
-    plt.subplot(1,3,2)
+    plt.subplot(2,3,2)
     ImportanceFeatures(model2,data)
     plt.title("Importance Features of each Algorithm")
     plt.xlabel("Random Forest")
-    plt.subplot(1,3,3)
+    plt.subplot(2,3,4)
     ImportanceFeatures_logis(model3,data)
     plt.xlabel("Logistic Regression")
     plt.show()
-ChartImportances(tree,random,logis,data_importances)
-    
+#ChartImportances(tree,random,logis,data_importances)
+def ChartCountPlot(data,x_axis,hue):
+    plt.figure(figsize=(20,10))
+    sns.countplot(x_axis,data=data,hue=hue)
+    plt.title("Chart of "+x_axis +" by "+hue)
+    plt.show()
+#ChartCountPlot(raw,'Age','satisfaction')
 
+def ChartCatPlot(data,x_axis,y_axis,hue,kind,col):
+    plt.figure(figsize=(20, 10))
+    sns.catplot(x=x_axis,y=y_axis,data=data,kind=kind,hue=hue,col=col,legend_out=False)
+    plt.show()
 
-
+ChartCatPlot(raw,'Class','Arrival Delay in Minutes','satisfaction','bar','Type of Travel')

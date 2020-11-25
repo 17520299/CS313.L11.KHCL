@@ -4,8 +4,13 @@ import Preprocessing as pre
 import pickle
 import Visualization as vs
 from sklearn.decomposition import PCA
-
-
+html_heading = '''
+<h1> Khai thác dữ liệu và ứng dụng (CS313.L11.KHCL)</h1><br>
+<h2> Phân tích dữ liệu về sự hài lòng của hành khách đi máy bay dựa trên đánh giá về 22 tiêu chí.<h2>
+'''
+st.markdown(html_heading,unsafe_allow_html=True)
+st.markdown('<style>h1{color: #FF5A60;}</style>', unsafe_allow_html=True)
+st.markdown('<style>h2{color: #A79B94;}</style>', unsafe_allow_html=True)
 #choose data
 def user_input_features():
     Gender = st.sidebar.selectbox('Gender', ('Male', 'Female'))
@@ -55,16 +60,41 @@ def user_input_features():
               }
     features = pd.DataFrame(datacl, index=[0])
     return features
-
+raw= pd.read_csv('train.csv')
 st.set_option('deprecation.showfileUploaderEncoding', False)
 st.set_option('deprecation.showPyplotGlobalUse', False)
 features = st.sidebar.selectbox('Features',('Raw Features','PCA'))
 mlAlgorithm = st.sidebar.selectbox('Machine Learning Algorithm',('Logistic Regression','Decision Tree','Random Forest'))
+st.sidebar.markdown("---")
 st.sidebar.subheader("Visualization Setting")
+st.sidebar.write("#### Chart with Countplot")
+x_label_c=st.sidebar.selectbox("X label",('Gender','Customer Type','Age','Type of Travel','Class','Flight Distance','Inflight wifi service','Departure/Arrival time convenient','Ease of Online booking',
+                                'Gate location','Food and drink','Online boarding','Seat comfort','Inflight entertainment','On-board service',
+                                'Leg room service','Baggage handling','Checkin service','Inflight service','Cleanliness','Arrival Delay in Minutes','Departure Delay in Minutes'))
+hue_c=st.sidebar.selectbox("Hue",('Gender','Customer Type','Age','Type of Travel','Class','satisfaction'))
+Visualize_count = st.sidebar.button(label="Visualize Countplot")
+if Visualize_count:
+    st.write('''
+    ## Biểu đồ biểu diễn đặc điểm các thuộc tính trong tập dữ liệu
+    ''')
+    st.pyplot(vs.ChartCountPlot(raw,x_label_c,hue_c))
+st.sidebar.write("#### Chart with Catplot")
+x_label_cat=st.sidebar.selectbox("X labels",('Gender','Customer Type','Age','Type of Travel','Class','Flight Distance','Inflight wifi service','Departure/Arrival time convenient','Ease of Online booking',
+                                'Gate location','Food and drink','Online boarding','Seat comfort','Inflight entertainment','On-board service',
+                                'Leg room service','Baggage handling','Checkin service','Inflight service','Cleanliness','Arrival Delay in Minutes','Departure Delay in Minutes'))
+y_label_cat=st.sidebar.selectbox("Y labels",('Gender','Customer Type','Age','Type of Travel','Class','Flight Distance','Inflight wifi service','Departure/Arrival time convenient','Ease of Online booking',
+                                'Gate location','Food and drink','Online boarding','Seat comfort','Inflight entertainment','On-board service',
+                                'Leg room service','Baggage handling','Checkin service','Inflight service','Cleanliness','Arrival Delay in Minutes','Departure Delay in Minutes'))
+hue_cat='satisfaction'
+kind_cat = st.sidebar.selectbox('Kind',('bar','violin'))
+col_cat=st.sidebar.selectbox("Columns",('Gender','Customer Type','Type of Travel','Class'))
+Visualize_cat = st.sidebar.button(label='Visualize Catplot')
+if Visualize_cat:
+    st.write('#Biểu đồ thống kê sự hài lòng của khách hàng với 3 thuộc tính')
+    st.pyplot(vs.ChartCatPlot(raw,x_label_cat,y_label_cat,hue_cat,kind_cat,col_cat))
+st.sidebar.markdown("---")
 uploaded_file = st.sidebar.file_uploader(label="Upload your CSV", type=['csv'])
-Result = st.sidebar.button(label='Chart Results')
-Predict = st.sidebar.button(label='Predict')
-Importances = st.sidebar.button(label = 'Importances Features')
+st.sidebar.markdown("---")
 #load saved classification model
 data_importances = pickle.load(open('data1_importances.pkl','rb'))
 logis = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/logisraw.pkl','rb'))
@@ -87,22 +117,24 @@ else:
     data = pre.ReadNDrop(data)
     data = pre.TranformImport(data)
     data_pca = pre.PCAImport(data)
-st.write(data)
-st.write(data_pca)
+st.sidebar.markdown("---")
+Result = st.sidebar.button(label='Chart Results')
+Predict = st.sidebar.button(label='Predict')
+Importances = st.sidebar.button(label = 'Importances Features')
 if features == 'Raw Features':
     if mlAlgorithm == 'Logistic Regression':
-        prediction_proba = logis.predict_proba(data)
+        prediction_proba = logis.predict(data)
     elif mlAlgorithm == 'Decision Tree':
-        prediction_proba = tree.predict_proba(data)
+        prediction_proba = tree.predict(data)
     else:
-        prediction_proba = random.predict_proba(data)
+        prediction_proba = random.predict(data)
 elif features == 'PCA':
     if mlAlgorithm == 'Logistic Regression':
-        prediction_proba = logisPCA.predict_proba(data_pca)
+        prediction_proba = logisPCA.predict(data_pca)
     elif mlAlgorithm == 'Decision Tree':
-        prediction_proba = treePCA.predict_proba(data_pca)
+        prediction_proba = treePCA.predict(data_pca)
     else:
-        prediction_proba = randomPCA.predict_proba(data_pca)
+        prediction_proba = randomPCA.predict(data_pca)
 # Visualization Result
 X_train,X_test,y_train,y_test = pickle.load(open('C:/Users/Admin/PycharmProjects/CS313.L11.KHCL/data_split.pkl','rb'))
 algorithm = ['LR','DT','RF']

@@ -5,12 +5,21 @@ import pickle
 import Visualization as vs
 from sklearn.decomposition import PCA
 html_heading = '''
-<h1> Khai thác dữ liệu và ứng dụng (CS313.L11.KHCL)</h1><br>
-<h2> Phân tích dữ liệu về sự hài lòng của hành khách đi máy bay dựa trên đánh giá về 22 tiêu chí.<h2>
+# Khai thác dữ liệu và ứng dụng (CS313.L11.KHCL)
+## Phân tích dữ liệu về sự hài lòng của hành khách đi máy bay dựa trên đánh giá về 22 tiêu chí.
+### Gồm có các chức năng chính:
+* Chọn thuộc tính gốc hoặc thuộc tính PCA để thực hiện dự đoán.
+* Trực quan hóa dữ liệu với biểu đồ Countplot và Catplot.
+* Thực hiện dự báo một dữ liệu mới dưới dạng nhập từ trang web và cả upload file từ máy tính cá nhân.
+* Kết quả các độ đo(Precision, Recall, F1-score) giữa 3 thuật toán máy học(Logistic Regression, Decision Tree, Random Forest).
+* Trực quan hóa các thuộc tính quan trọng nhất ảnh hưởng đến nhãn phân lớp của bài toán(Important Features).
 '''
 st.markdown(html_heading,unsafe_allow_html=True)
-st.markdown('<style>h1{color: #FF5A60;}</style>', unsafe_allow_html=True)
-st.markdown('<style>h2{color: #A79B94;}</style>', unsafe_allow_html=True)
+st.markdown('<style>h1{color: #FFCF00;}</style>', unsafe_allow_html=True)
+st.markdown('<style>h2{color: #EDB200;}</style>', unsafe_allow_html=True)
+st.markdown('<style>h3{color: #D01013;}</style>', unsafe_allow_html=True)
+st.markdown('<style>li{color: #41898D;}</style>', unsafe_allow_html=True)
+st.markdown('<style>h4{color: #CD5C5C;}</style>', unsafe_allow_html=True)
 #choose data
 def user_input_features():
     Gender = st.sidebar.selectbox('Gender', ('Male', 'Female'))

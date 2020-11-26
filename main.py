@@ -27,7 +27,7 @@ def user_input_features():
     CustomerType = st.sidebar.selectbox('Customer Type', ('Loyal Customer', 'disloyal Customer'))
     Age = st.sidebar.slider('Age', 7, 85)
     TypeofTravel = st.sidebar.selectbox('Type of Travel', ('Personal Travel', 'Business travel'))
-    Class = st.sidebar.selectbox('Class', ('Eco Plus', 'Business'))
+    Class = st.sidebar.selectbox('Class', ('Eco Plus', 'Business','Eco'))
     FlightDistance = st.sidebar.slider('FlightDistance', 31, 4983)
     Inflight_wifi_service = st.sidebar.slider('Inflight wifi service', 1,5)
     Departure_Arrival_time_convenient = st.sidebar.slider('Departure/Arrival time convenient',1,5)

@@ -8,9 +8,10 @@ html_heading = '''
 # Khai thác dữ liệu và ứng dụng (CS313.L11.KHCL)
 ## Phân tích dữ liệu về sự hài lòng của hành khách đi máy bay dựa trên đánh giá về 22 tiêu chí.
 ### Gồm có các chức năng chính:
-* Chọn thuộc tính gốc hoặc thuộc tính PCA để thực hiện dự đoán.
 * Trực quan hóa dữ liệu với biểu đồ Countplot và Catplot.
+    * 
 * Thực hiện dự báo một dữ liệu mới dưới dạng nhập từ trang web và cả upload file từ máy tính cá nhân.
+* Chọn thuộc tính gốc hoặc thuộc tính PCA để thực hiện dự đoán.
 * Kết quả các độ đo(Precision, Recall, F1-score) giữa 3 thuật toán máy học(Logistic Regression, Decision Tree, Random Forest).
 * Trực quan hóa các thuộc tính quan trọng nhất ảnh hưởng đến nhãn phân lớp của bài toán(Important Features).
 '''
@@ -81,12 +82,19 @@ x_label_c=st.sidebar.selectbox("X label",('Gender','Customer Type','Age','Type o
                                 'Gate location','Food and drink','Online boarding','Seat comfort','Inflight entertainment','On-board service',
                                 'Leg room service','Baggage handling','Checkin service','Inflight service','Cleanliness','Arrival Delay in Minutes','Departure Delay in Minutes'))
 hue_c=st.sidebar.selectbox("Hue",('Gender','Customer Type','Age','Type of Travel','Class','satisfaction'))
+kind_c = st.sidebar.selectbox('Kind Chart',('bar','violin','point'))
 Visualize_count = st.sidebar.button(label="Visualize Countplot")
+Visualize_cat_c = st.sidebar.button(label='Visualize Catplot 2 attribute')
 if Visualize_count:
     st.write('''
     ## Biểu đồ biểu diễn đặc điểm các thuộc tính trong tập dữ liệu
     ''')
     st.pyplot(vs.ChartCountPlot(raw,x_label_c,hue_c))
+if Visualize_cat_c:
+    st.write('''
+        ## Biểu đồ biểu diễn đặc điểm các thuộc tính trong tập dữ liệu
+        ''')
+    st.pyplot(vs.Chartcatplot2atrribute(raw, x_label_c, hue_c,kind_c))
 st.sidebar.write("#### Chart with Catplot")
 x_label_cat=st.sidebar.selectbox("X labels",('Gender','Customer Type','Age','Type of Travel','Class','Flight Distance','Inflight wifi service','Departure/Arrival time convenient','Ease of Online booking',
                                 'Gate location','Food and drink','Online boarding','Seat comfort','Inflight entertainment','On-board service',
@@ -97,7 +105,7 @@ y_label_cat=st.sidebar.selectbox("Y labels",('Gender','Customer Type','Age','Typ
 hue_cat='satisfaction'
 kind_cat = st.sidebar.selectbox('Kind',('bar','violin'))
 col_cat=st.sidebar.selectbox("Columns",('Gender','Customer Type','Type of Travel','Class'))
-Visualize_cat = st.sidebar.button(label='Visualize Catplot')
+Visualize_cat = st.sidebar.button(label='Visualize Catplot 3 attribute')
 if Visualize_cat:
     st.write('#Biểu đồ thống kê sự hài lòng của khách hàng với 3 thuộc tính')
     st.pyplot(vs.ChartCatPlot(raw,x_label_cat,y_label_cat,hue_cat,kind_cat,col_cat))

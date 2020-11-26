@@ -89,11 +89,15 @@ def ChartCountPlot(data,x_axis,hue):
     sns.countplot(x_axis,data=data,hue=hue)
     plt.title("Chart of "+x_axis +" by "+hue)
     plt.show()
-#ChartCountPlot(raw,'Age','satisfaction')
+def Chartcatplot2atrribute(data,x_axis,y_axis,kind_c):
+    data['satisfaction'] = [1 if each == 'satisfied' else 0 for each in data['satisfaction']]
+    sns.catplot(x_axis,y_axis, data=data,kind=kind_c,aspect=5,height=5)
+    plt.title("Chart of " + x_axis + " and " +y_axis )
+    plt.show()
+Chartcatplot2atrribute(raw,'Age','satisfaction','point')
 
 def ChartCatPlot(data,x_axis,y_axis,hue,kind,col):
     plt.figure(figsize=(20, 10))
     sns.catplot(x=x_axis,y=y_axis,data=data,kind=kind,hue=hue,col=col,legend_out=False)
     plt.show()
 
-ChartCatPlot(raw,'Class','Arrival Delay in Minutes','satisfaction','bar','Type of Travel')
